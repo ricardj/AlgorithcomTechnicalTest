@@ -1,8 +1,12 @@
-﻿using UnityEngine;
+﻿using System;
+using UnityEngine;
 
 public class Picker : MonoBehaviour
 {
     public PickableEvent OnObjectPicked;
+
+    [Header("Debug values")]
+    [SerializeField] bool _isActivated = true;
 
     public void OnTriggerEnter(Collider other)
     {
@@ -10,12 +14,26 @@ public class Picker : MonoBehaviour
         TryPickObject(other.gameObject);
     }
 
+    public void Deactivate()
+    {
+        _isActivated = false;
+    }
+
+    public void Activate()
+    {
+        _isActivated = true;
+    }
+
     private void TryPickObject(GameObject targetObject)
     {
-        IPickable pickable = targetObject.GetComponentInChildren<IPickable>();
-        if (pickable != null)
+        if (_isActivated)
         {
-            OnObjectPicked.Invoke(pickable);
+            IPickable pickable = targetObject.GetComponentInChildren<IPickable>();
+            if (pickable != null)
+            {
+
+                OnObjectPicked.Invoke(pickable);
+            }
         }
     }
 }
