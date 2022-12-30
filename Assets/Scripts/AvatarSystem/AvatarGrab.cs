@@ -33,7 +33,7 @@ public class AvatarGrab : MonoBehaviour
     {
         if (!_currentPicker.HasGrabbedSomething())
         {
-            Debug.Log("Picker empty");
+
             TryPickSomething();
         }
         else
@@ -44,7 +44,7 @@ public class AvatarGrab : MonoBehaviour
 
     private void ThrowPickedObject()
     {
-        Debug.Log("THROWING EVERYTHING");
+
         _currentPicker.SetEmpty();
         DOTween.To(() => _rig.weight, x => _rig.weight = x, 0f, _grabActivationTime);
     }
@@ -64,7 +64,7 @@ public class AvatarGrab : MonoBehaviour
 
         if (pickables.Count > 0)
         {
-            Debug.Log("Pickables found");
+
             pickables.OrderBy(pickable => Vector3.Distance(pickable.transform.position, _currentPicker.transform.position));
 
             IPickable targetPickable = pickables[0];
@@ -79,7 +79,7 @@ public class AvatarGrab : MonoBehaviour
         }
         else
         {
-            Debug.Log("NO PICKABLES FOUND");
+
             ThrowPickedObject();
         }
     }
