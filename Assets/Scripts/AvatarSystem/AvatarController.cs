@@ -1,3 +1,4 @@
+using System;
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
@@ -5,12 +6,9 @@ using UnityEngine;
 public class AvatarController : MonoBehaviour
 {
 
-    [SerializeField] CharacterController _characterController;
-    [SerializeField] Transform cam;
-    [SerializeField] float _speed = 6f;
-    [SerializeField] float _turnSmoothTime = 0.1f;
-    float _turnSmoothVelocity;
+    [SerializeField] AvatarMovement _avatarMovement;
     [SerializeField] Animator _animator;
+    [SerializeField] ISeatable _seatable;
 
     [Header("Trigger animatiosn")]
     [SerializeField] string _walk = "walk";
@@ -18,35 +16,44 @@ public class AvatarController : MonoBehaviour
     [SerializeField] string _stand = "stand";
 
 
+    public void Start()
+    {
+        _seatable.OnSeatActivated.AddListener(() => _avatarMovement.Deactivate());
+        _seatable.OnSeatDeactivated.AddListener(() =>
+        {
+            SetIdleStand();
+            _avatarMovement.Activate();
+        });
+        _seatable.OnFinishedSeatPositioning.AddListener(() => SetSit());
+
+        _avatarMovement.OnStartMoving.AddListener(SetWalk);
+        _avatarMovement.OnStopMoving.AddListener(SetIdleStand);
+    }
+
+    public void Update()
+    {
+        
+    }
+
+
     public void SetWalk()
     {
         SetTrigger(_walk);
     }
 
-    public void SetIdle()
+    public void SetIdleStand()
     {
+        SetTrigger(_stand);
+    }
 
+    public void SetSit()
+    {
+        SetTrigger(_sit);
     }
     public void SetTrigger(string targetTrigger)
     {
         _animator.SetTrigger(targetTrigger);
     }
 
-    public void Update()
-    {
-        float horizontal = Input.GetAxisRaw("Horizontal");
-        float vertical = Input.GetAxisRaw("Vertical");
-        Vector3 direction = new Vector3(horizontal, 0f, vertical).normalized;
 
-        if (direction.magnitude >= 0.1f)
-        {
-            float targetAngle = Mathf.Atan2(direction.x, direction.z) * Mathf.Rad2Deg + cam.eulerAngles.y;
-            float angle = Mathf.SmoothDampAngle(transform.eulerAngles.y, targetAngle, ref _turnSmoothVelocity, _turnSmoothTime);
-            transform.rotation = Quaternion.Euler(0f, angle, 0f);
-
-            Vector3 moveDir = Quaternion.Euler(0f, targetAngle, 0f) * Vector3.forward;
-            _characterController.Move(moveDir.normalized * _speed * Time.deltaTime);
-
-        }
-    }
 }
