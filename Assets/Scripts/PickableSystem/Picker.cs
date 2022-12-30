@@ -3,37 +3,40 @@ using UnityEngine;
 
 public class Picker : MonoBehaviour
 {
-    public PickableEvent OnObjectPicked;
+
 
     [Header("Debug values")]
-    [SerializeField] bool _isActivated = true;
 
-    public void OnTriggerEnter(Collider other)
+    [SerializeField] IPickable _currentPickedObject = null;
+
+
+
+
+    public void TryPickObject(GameObject targetObject)
     {
-
-        TryPickObject(other.gameObject);
-    }
-
-    public void Deactivate()
-    {
-        _isActivated = false;
-    }
-
-    public void Activate()
-    {
-        _isActivated = true;
-    }
-
-    private void TryPickObject(GameObject targetObject)
-    {
-        if (_isActivated)
+        IPickable pickable = targetObject.GetComponentInChildren<IPickable>();
+        if (pickable != null)
         {
-            IPickable pickable = targetObject.GetComponentInChildren<IPickable>();
-            if (pickable != null)
-            {
+            SetPickObject(pickable);
+        }
+    }
 
-                OnObjectPicked.Invoke(pickable);
-            }
+    public void SetPickObject(IPickable pickable)
+    {
+        _currentPickedObject = pickable;
+    }
+
+    public bool HasGrabbedSomething()
+    {
+        return _currentPickedObject != null;
+    }
+
+    public void SetEmpty()
+    {
+        if (_currentPickedObject != null)
+        {
+            _currentPickedObject.SetNotGrabbed();
+            _currentPickedObject = null;
         }
     }
 }

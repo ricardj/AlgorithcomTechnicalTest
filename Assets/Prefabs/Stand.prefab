@@ -292,7 +292,8 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: a8465b0740c64c04cbf67eef7216d144, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  _pickablePlaceholder: {fileID: 4346160040926542092}
+  _rigidbody: {fileID: 3323745221581026630}
+  _collider: {fileID: 3937661353907460004}
 --- !u!4 &5209830498612689355 stripped
 Transform:
   m_CorrespondingSourceObject: {fileID: -8679921383154817045, guid: 3d5c10a05fe2ee348891d7b965681d26,
